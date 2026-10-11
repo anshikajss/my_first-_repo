@@ -1,0 +1,202 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+
+// Create circular linked list
+struct Node* createList(int n)
+{
+    struct Node *head = NULL;
+    struct Node *newNode;
+    struct Node *temp;
+    int data, i;
+
+    for(i = 1; i <= n; i++)
+    {
+        newNode = (struct Node*)malloc(sizeof(struct Node));
+
+        printf("Enter data for node %d: ", i);
+        scanf("%d", &data);
+
+        newNode->data = data;
+        newNode->next = NULL;
+
+        if(head == NULL)
+        {
+            head = newNode;
+            newNode->next = head;
+        }
+        else
+        {
+            temp = head;
+
+            while(temp->next != head)
+            {
+                temp = temp->next;
+            }
+
+            temp->next = newNode;
+            newNode->next = head;
+        }
+    }
+
+    return head;
+}
+
+// Insert at beginning
+struct Node* insertAtBeginning(struct Node *head, int data)
+{
+    struct Node *newNode;
+    struct Node *temp;
+
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = data;
+
+    if(head == NULL)
+    {
+        newNode->next = newNode;
+        return newNode;
+    }
+
+    temp = head;
+
+    while(temp->next != head)
+    {
+        temp = temp->next;
+    }
+
+    newNode->next = head;
+    temp->next = newNode;
+    head = newNode;
+
+    return head;
+}
+
+// Insert at end
+struct Node* insertAtEnd(struct Node *head, int data)
+{
+    struct Node *newNode;
+    struct Node *temp;
+
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = data;
+
+    if(head == NULL)
+    {
+        newNode->next = newNode;
+        return newNode;
+    }
+
+    temp = head;
+
+    while(temp->next != head)
+    {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->next = head;
+
+    return head;
+}
+
+// Insert at position
+struct Node* insertAtPosition(struct Node *head, int data, int position)
+{
+    struct Node *newNode;
+    struct Node *temp;
+    int i;
+
+    if(position == 1)
+    {
+        return insertAtBeginning(head, data);
+    }
+
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+
+    temp = head;
+
+    for(i = 1; i < position - 1 && temp->next != head; i++)
+    {
+        temp = temp->next;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
+
+    return head;
+}
+
+// Display
+void display(struct Node *head)
+{
+    struct Node *temp;
+
+    if(head == NULL)
+    {
+        printf("List is empty!\n");
+        return;
+    }
+
+    temp = head;
+
+    do
+    {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    while(temp != head);
+
+    printf("(HEAD)\n");
+}
+
+int main()
+{
+    struct Node *head;
+    int data, position;
+
+    // Create 5 nodes
+    head = createList(5);
+
+    printf("\nOriginal Circular Linked List:\n");
+    display(head);
+
+    // Insert at beginning
+    printf("\nEnter data to insert at beginning: ");
+    scanf("%d", &data);
+
+    head = insertAtBeginning(head, data);
+
+    printf("After insertion at beginning:\n");
+    display(head);
+
+    // Insert at end
+    printf("\nEnter data to insert at end: ");
+    scanf("%d", &data);
+
+    head = insertAtEnd(head, data);
+
+    printf("After insertion at end:\n");
+    display(head);
+
+    // Insert at position
+    printf("\nEnter data to insert: ");
+    scanf("%d", &data);
+
+    printf("Enter position: ");
+    scanf("%d", &position);
+
+    head = insertAtPosition(head, data, position);
+
+    printf("After insertion at position:\n");
+    display(head);
+
+    return 0;
+}
