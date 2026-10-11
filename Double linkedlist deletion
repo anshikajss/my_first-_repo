@@ -1,0 +1,195 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+// Create 5 nodes
+struct Node* createList(int n)
+{
+    struct Node *head = NULL;
+    struct Node *newNode;
+    struct Node *temp;
+    int data, i;
+
+    for(i = 1; i <= n; i++)
+    {
+        newNode = (struct Node*)malloc(sizeof(struct Node));
+
+        printf("Enter data for node %d: ", i);
+        scanf("%d", &data);
+
+        newNode->data = data;
+        newNode->prev = NULL;
+        newNode->next = NULL;
+
+        if(head == NULL)
+        {
+            head = newNode;
+            temp = newNode;
+        }
+        else
+        {
+            temp->next = newNode;
+            newNode->prev = temp;
+            temp = newNode;
+        }
+    }
+
+    return head;
+}
+
+// Delete from beginning
+struct Node* deleteAtBeginning(struct Node *head)
+{
+    struct Node *temp;
+
+    if(head == NULL)
+    {
+        printf("List is empty!\n");
+        return head;
+    }
+
+    temp = head;
+    head = head->next;
+
+    if(head != NULL)
+    {
+        head->prev = NULL;
+    }
+
+    free(temp);
+
+    return head;
+}
+
+// Delete from end
+struct Node* deleteAtEnd(struct Node *head)
+{
+    struct Node *temp;
+
+    if(head == NULL)
+    {
+        printf("List is empty!\n");
+        return head;
+    }
+
+    temp = head;
+
+    while(temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    if(temp->prev != NULL)
+    {
+        temp->prev->next = NULL;
+    }
+    else
+    {
+        // Only one node
+        head = NULL;
+    }
+
+    free(temp);
+
+    return head;
+}
+
+// Delete from a given position
+struct Node* deleteAtPosition(struct Node *head, int position)
+{
+    struct Node *temp;
+    int i;
+
+    if(head == NULL)
+    {
+        printf("List is empty!\n");
+        return head;
+    }
+
+    // Delete first node
+    if(position == 1)
+    {
+        return deleteAtBeginning(head);
+    }
+
+    temp = head;
+
+    for(i = 1; i < position && temp != NULL; i++)
+    {
+        temp = temp->next;
+    }
+
+    if(temp == NULL)
+    {
+        printf("Invalid position!\n");
+        return head;
+    }
+
+    // Connect previous node to next node
+    temp->prev->next = temp->next;
+
+    // Connect next node to previous node
+    if(temp->next != NULL)
+    {
+        temp->next->prev = temp->prev;
+    }
+
+    free(temp);
+
+    return head;
+}
+
+// Display
+void display(struct Node *head)
+{
+    struct Node *temp = head;
+
+    while(temp != NULL)
+    {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL\n");
+}
+
+int main()
+{
+    struct Node *head;
+    int position;
+
+    // Create 5 nodes
+    head = createList(5);
+
+    printf("\nOriginal List:\n");
+    display(head);
+
+    // Delete from beginning
+    head = deleteAtBeginning(head);
+
+    printf("\nAfter deleting from beginning:\n");
+    display(head);
+
+    // Delete from end
+    head = deleteAtEnd(head);
+
+    printf("\nAfter deleting from end:\n");
+    display(head);
+
+    // Delete from position
+    printf("\nEnter position to delete: ");
+    scanf("%d", &position);
+
+    head = deleteAtPosition(head, position);
+
+    printf("After deleting from position %d:\n", position);
+    display(head);
+
+    return 0;
+}
