@@ -1,0 +1,214 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a node
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+
+// Function to create a linked list
+struct Node* createList(int n)
+{
+    struct Node *head = NULL;
+    struct Node *newNode, *temp;
+    int i, value;
+
+    for(i = 1; i <= n; i++)
+    {
+        // Allocate memory for a new node
+        newNode = (struct Node*)malloc(sizeof(struct Node));
+
+        printf("Enter data for node %d: ", i);
+        scanf("%d", &value);
+
+        newNode->data = value;
+        newNode->next = NULL;
+
+        // If list is empty, make new node the head
+        if(head == NULL)
+        {
+            head = newNode;
+            temp=newNode;
+        }
+        else
+        {
+        	  temp->next = newNode;
+             temp = newNode;
+        
+     }
+    }
+
+    return head;
+}
+
+// Function to display the linked list
+void display(struct Node *head)
+{
+    struct Node *temp = head;
+
+    if(head == NULL)
+    {
+        printf("Linked List is empty.\n");
+        return;
+    }
+
+    printf("Linked List: ");
+
+    // Traverse the list
+    while(temp != NULL)
+    {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL\n");
+}
+
+// Function to insert a node at the beginning
+struct Node* insertBeginning(struct Node *head, int value)
+{
+    struct Node *newNode;
+
+    // Create a new node
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = value;
+
+    // New node points to the current head
+    newNode->next = head;
+
+    // Make new node the new head
+    head = newNode;
+
+    return head;
+}
+
+// Function to insert a node at the end
+struct Node* insertEnd(struct Node *head, int value)
+{
+    struct Node *newNode, *temp;
+
+    // Create a new node
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = value;
+    newNode->next = NULL;
+
+    // If list is empty, new node becomes head
+    if(head == NULL)
+    {
+        head = newNode;
+        return head;
+    }
+
+    // Traverse to the last node
+    temp = head;
+
+    while(temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    // Link the new node at the end
+    temp->next = newNode;
+
+    return head;
+}
+
+//Function to insert a node at a given position
+struct Node* insertPosition(struct Node *head, int value, int position)
+{
+    struct Node *newNode, *temp;
+    int i;
+
+    // Position must be greater than or equal to 1
+    if(position < 1)
+    {
+        printf("Invalid position!\n");
+        return head;
+    }
+
+    // If position is 1, insert at beginning
+    if(position == 1)
+    {
+        return insertBeginning(head, value);
+    }
+
+    // Create a new node
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = value;
+
+    temp = head;
+
+    // Move temp to the node just before the required position
+    for(i = 1; i < position - 1 && temp != NULL; i++)
+    {
+        temp = temp->next;
+    }
+
+    // Position is greater than the length of the list
+    if(temp == NULL)
+    {
+        printf("Invalid position!\n");
+        free(newNode);
+        return head;
+    }
+
+    // Insert the new node
+    newNode->next = temp->next;
+    temp->next = newNode;
+
+    return head;
+}
+
+// Main function
+int main()
+{
+    struct Node *head = NULL;
+    int n, value, position;
+
+    // Create linked list
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+
+    head = createList(n);
+
+    // Display original linked list
+    printf("\nOriginal ");
+    display(head);
+
+    //Insert at beginning
+    printf("\nEnter value to insert at beginning: ");
+    scanf("%d", &value);
+
+   head = insertBeginning(head, value);
+
+    printf("After insertion at beginning:\n");
+    display(head);
+
+//    // Insert at end
+    printf("\nEnter value to insert at end: ");
+    scanf("%d", &value);
+
+    head = insertEnd(head, value);
+
+    printf("After insertion at end:\n");
+    display(head);
+
+    // Insert at a given position
+    printf("\nEnter value to insert: ");
+    scanf("%d", &value);
+
+    printf("Enter position: ");
+    scanf("%d", &position);
+
+    head = insertPosition(head, value, position);
+
+    printf("After insertion at position %d:\n", position);
+    display(head);
+
+    return 0;
+}
